@@ -5,30 +5,36 @@ type Props = {
 };
 
 type State = {
-  time: string;
+  time: Date;
 };
+
+function getFormattedTime(time: Date): string {
+  return time.toUTCString().slice(-12, -4);
+}
 
 export class Clock extends React.PureComponent<Props, State> {
   state: State = {
-    time: new Date().toUTCString().slice(-12, -4),
+    time: new Date(),
   };
 
   timerId = 0;
 
   componentDidMount(): void {
     this.timerId = window.setInterval(() => {
+      const today = new Date();
+
       this.setState({
-        time: new Date().toUTCString().slice(-12, -4),
+        time: today,
       });
       // eslint-disable-next-line no-console
-      console.log(this.state.time);
+      console.log(`${getFormattedTime(today)}`);
     }, 1000);
   }
 
   componentDidUpdate(prevProps: Readonly<Props>): void {
     if (prevProps.name !== this.props.name) {
       // eslint-disable-next-line no-console
-      console.log(`Renamed from ${prevProps.name} to ${this.props.name}`);
+      console.warn(`Renamed from ${prevProps.name} to ${this.props.name}`);
     }
   }
 
@@ -46,7 +52,7 @@ export class Clock extends React.PureComponent<Props, State> {
 
         {' time is '}
 
-        <span className="Clock__time">{time}</span>
+        <span className="Clock__time">{getFormattedTime(time)}</span>
       </div>
     );
   }
